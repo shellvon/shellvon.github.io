@@ -6,4 +6,4 @@
 
 博客的搭建缘由可以参见我的博文: [一个新的开始](http://von.sh/2017/12/01/a-new-beginning-again/)
 
-博客会不定期更新，涉及到搭建博客技术上的更新我会放在博文 [changelog](https://von/changelog/) 里
+博客会不定期更新，涉及到搭建博客技术上的更新我会放在博文 [changelog](https://von.sh/changelog/) 里
