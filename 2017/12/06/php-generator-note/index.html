@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Generator,PHP," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="shellvon的博客" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="图片来源 https://wpengine.com/try/php7-hosting/  序先说，标题虽然是《Generator 笔记》，但实际上本文会主要内容会是yield。 以鄙人的拙见，目前大多数 PHPer 对 PHP 的 yield 关键字并不怎么了解，但实际上这却是一块非常值得学习的地方，至少于我而言如此。">
+<meta name="keywords" content="Generator,PHP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PHP Generator 笔记">
+<meta property="og:url" content="http://von.sh/2017/12/06/php-generator-note/index.html">
+<meta property="og:site_name" content="shellvon的博客">
+<meta property="og:description" content="图片来源 https://wpengine.com/try/php7-hosting/  序先说，标题虽然是《Generator 笔记》，但实际上本文会主要内容会是yield。 以鄙人的拙见，目前大多数 PHPer 对 PHP 的 yield 关键字并不怎么了解，但实际上这却是一块非常值得学习的地方，至少于我而言如此。yield 为 PHP 引入了生成器，协程 等一些复杂概念，导致入门门槛也挺">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://von.sh/assets/img/generator-note.svg">
+<meta property="og:image" content="http://von.sh/assets/img/pyramid-of-doom.jpg">
+<meta property="og:updated_time" content="2017-12-06T12:39:12.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PHP Generator 笔记">
+<meta name="twitter:description" content="图片来源 https://wpengine.com/try/php7-hosting/  序先说，标题虽然是《Generator 笔记》，但实际上本文会主要内容会是yield。 以鄙人的拙见，目前大多数 PHPer 对 PHP 的 yield 关键字并不怎么了解，但实际上这却是一块非常值得学习的地方，至少于我而言如此。yield 为 PHP 引入了生成器，协程 等一些复杂概念，导致入门门槛也挺">
+<meta name="twitter:image" content="http://von.sh/assets/img/generator-note.svg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'XTTY5R68BV',
+      apiKey: '28b572f0f162a057439f018c40e8034f',
+      indexName: 'prod_von_post',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"搜索你要的文章","hits_empty":"很遗憾,没有找到: ${query}","hits_stats":"找到 ${hits} 条记录,耗时 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://von.sh/2017/12/06/php-generator-note/"/>
+
+
+
+
+
+  <title>PHP Generator 笔记 | shellvon的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">shellvon的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">菜鸟一枚</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-日志">
+          <a href="/changelog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-university"></i> <br />
+            
+            日志
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://von.sh/2017/12/06/php-generator-note/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shellvon">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/3349696?s=360&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="shellvon的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">PHP Generator 笔记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-06T16:55:51+08:00">
+                2017-12-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/12/06/php-generator-note/" class="leancloud_visitors" data-flag-title="PHP Generator 笔记">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="/assets/img/generator-note.svg" alt="PHP Generator 笔记"></p>
+<blockquote>
+<p>图片来源 <a href="https://wpengine.com/try/php7-hosting/" target="_blank" rel="noopener">https://wpengine.com/try/php7-hosting/</a></p>
+</blockquote>
+<h1 id="序"><a href="#序" class="headerlink" title="序"></a>序</h1><p>先说，标题虽然是《Generator 笔记》，但实际上本文会主要内容会是<code>yield</code>。</p>
+<p>以鄙人的拙见，目前大多数 PHPer 对 PHP 的 <code>yield</code> 关键字并不怎么了解，但实际上这却是一块非常值得学习的地方，至少于我而言如此。<br><code>yield</code> 为 PHP 引入了<strong>生成器</strong>，<strong>协程</strong> 等一些复杂概念，导致入门门槛也挺高。</p>
+<p>关于学不学<code>yield</code>, 目前，我遇到过以下几类人：<br><a id="more"></a></p>
+<ul>
+<li>学个 PHP 都是为了简单快速搞东西上线，不用这玩意也能满足老板需求(<strong>不想学</strong>)</li>
+<li>自己写的代码也遇不到啥问题非要<code>yield</code>搞定的( <strong>没有应用场景</strong>)</li>
+<li><code>yield</code> 带来了<strong>生成器</strong>,<strong>协程</strong>,<strong>异步</strong>等一系列<code>复杂性</code>概念，文档少的可怜，(<strong>门槛高</strong>)</li>
+<li>理解协程的又难免会和 Golang 的 <a href="https://tour.golang.org/concurrency/1" target="_blank" rel="noopener">goroutines</a> 做对比。(<strong>不屑于学</strong>)</li>
+</ul>
+<p>我算第三类，<strong>文档少的可怜</strong>。当然，还有就是自己的聪明程度不够。<br>关于 PHP <code>yield</code>这个，我尝试看了许多博文，可按照国内的技术尿性，大家的博文内容都写的是一样的。也不知道啥时候搜索引擎可以帮我智能去重就好了。值得庆幸的是，Google 还是给了我一些不错的文章：</p>
+<ul>
+<li><a href="https://nikic.github.io/2012/12/22/Cooperative-multitasking-using-coroutines-in-PHP.html" target="_blank" rel="noopener">Cooperative-multitasking-using-coroutines-in-PHP</a><ul>
+<li>中文: <a href="http://www.laruence.com/2015/05/28/3038.html" target="_blank" rel="noopener">在PHP中使用协程实现多任务调度</a></li>
+</ul>
+</li>
+<li><a href="https://blog.ircmaxell.com/2012/07/what-generators-can-do-for-you.html" target="_blank" rel="noopener">What-generators-can-do-for-you</a></li>
+</ul>
+<p>当然官方文档也是不错的内容: <a href="https://wiki.php.net/rfc/generators" target="_blank" rel="noopener">RFC:generators</a> 和 <a href="http://php.net/manual/zh/language.generators.overview.php" target="_blank" rel="noopener">PHP 手册 &gt; 语言参考 &gt; 生成器</a></p>
+<p>由于PHP的资料太少，我反其道而行之，选择了去学习 <code>Python</code> 的生成器。关于 Python 的生成器，我主要看了大神 <a href="http://www.dabeaz.com/tutorials.html" target="_blank" rel="noopener">Dabeaz</a> 的几个 PPT，都可以在他博客里面找到。本人的笔记，全部借(cao)鉴(xi)自此大神的 PPT。</p>
+<h1 id="yield的概念"><a href="#yield的概念" class="headerlink" title="yield的概念"></a>yield的概念</h1><h2 id="迭代器协议"><a href="#迭代器协议" class="headerlink" title="迭代器协议"></a>迭代器协议</h2><p>在 PHP 中, 可以实现 <a href="http://php.net/manual/zh/language.oop5.interfaces.php" target="_blank" rel="noopener">Iterator 接口</a>, 从而可以让对象自行决定如何遍历以及每次遍历时哪些值可用。这样的接口，我们称之为迭代器协议 (Iteration Protocol) 。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Iterator extends Traversable &#123;</span><br><span class="line"><span class="comment">/* 方法 */</span></span><br><span class="line">  <span class="keyword">abstract</span> <span class="keyword">public</span> mixed current ( void ) <span class="comment">// 返回当前元素</span></span><br><span class="line">  <span class="keyword">abstract</span> <span class="keyword">public</span> scalar key ( void )    <span class="comment">// 返回当前元素的键</span></span><br><span class="line">  <span class="keyword">abstract</span> <span class="keyword">public</span> void next ( void )     <span class="comment">// 向前移动到下一个元素</span></span><br><span class="line">  <span class="keyword">abstract</span> <span class="keyword">public</span> void rewind ( void )   <span class="comment">// 返回到迭代器的第一个元素</span></span><br><span class="line">  <span class="keyword">abstract</span> <span class="keyword">public</span> boolean valid ( void ) <span class="comment">//  检查当前位置是否有效</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><a href="http://php.net/manual/zh/class.generator.php" target="_blank" rel="noopener">生成器 Generator</a> 就是是实现了迭代器协议的一种对象。这种对象比较特殊：</p>
+<ol>
+<li>无法直接使用 new  实例化</li>
+<li>得使用 <strong>yield</strong> 产生</li>
+<li>可以通过<code>send</code>方法传值给yield所在位置</li>
+</ol>
+<p>为什么需要引入关键字 <code>yield</code> 呢？</p>
+<p>我们先来看一个例子，需要读取一个文件每一行出来:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 使用数组.</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getLines</span><span class="params">($file)</span> </span>&#123;</span><br><span class="line">  $f = fopen($file, <span class="string">'r'</span>);</span><br><span class="line">  $lines = [];</span><br><span class="line">  <span class="keyword">if</span> (!$f) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="keyword">Exception</span>();</span><br><span class="line">  <span class="keyword">while</span> (<span class="keyword">false</span> !== $line = fgets($f)) &#123;</span><br><span class="line">    $lines[] = $line;</span><br><span class="line">  &#125;</span><br><span class="line">  fclose($f);</span><br><span class="line">  <span class="keyword">return</span> $lines;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述代码有个明显的问题：如果当文件足够大的情况下，数组<code>$lines</code>会特别大，内存随时会跪。</p>
+<p>幸运的是，我们可以使用迭代器，一行一行的读，参见<a href="https://blog.ircmaxell.com/2012/07/what-generators-can-do-for-you.html" target="_blank" rel="noopener">这里</a>的例子: </p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 自己实现文件遍历</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FileIterator</span> <span class="keyword">implements</span> <span class="title">Iterator</span> </span>&#123;</span><br><span class="line">    <span class="keyword">protected</span> $f;</span><br><span class="line">    <span class="keyword">protected</span> $data;</span><br><span class="line">    <span class="keyword">protected</span> $key;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($file)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;f = fopen($file, <span class="string">'r'</span>);</span><br><span class="line">        <span class="keyword">if</span> (!<span class="keyword">$this</span>-&gt;f) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="keyword">Exception</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        fclose(<span class="keyword">$this</span>-&gt;f);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">current</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;data;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">key</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;key;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">next</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;data = fgets(<span class="keyword">$this</span>-&gt;f);</span><br><span class="line">        <span class="keyword">$this</span>-&gt;key++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">rewind</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        fseek(<span class="keyword">$this</span>-&gt;f, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">$this</span>-&gt;data = fgets(<span class="keyword">$this</span>-&gt;f);</span><br><span class="line">        <span class="keyword">$this</span>-&gt;key = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">valid</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span> !== <span class="keyword">$this</span>-&gt;data;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如你所见，虽然这样解决了内存问题，但是代码复杂的多了。于是乎，<code>Generator</code>也上线了，一个函数里面只要有<code>yield</code>关键字，就是<code>Generator</code>，它实现了迭代器协议。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 使用 yield 完成相同功能</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getLines</span><span class="params">($file)</span> </span>&#123;</span><br><span class="line">    $f = fopen($file, <span class="string">'r'</span>);</span><br><span class="line">    <span class="keyword">if</span> (!$f) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="keyword">Exception</span>();</span><br><span class="line">    <span class="keyword">while</span> ($line = fgets($f)) &#123;</span><br><span class="line">        <span class="keyword">yield</span> $line;</span><br><span class="line">    &#125;</span><br><span class="line">    fclose($f);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意到上述代码完成了和迭代器相同的功能，<strong>复杂性大大降低</strong>，相较于数组实现，<strong>性能开销也会明显下降</strong>。 </p>
+<h2 id="生成器"><a href="#生成器" class="headerlink" title="生成器"></a>生成器</h2><p>如你所见，生成器写法和普通函数写法基本上一致，只是没有用<code>return</code>，而是<code>yield</code>。</p>
+<p>生成器和普通函数区别其实挺大的。</p>
+<ul>
+<li>调用一个生成器只是会创建一个生成器对象，而<strong>不会</strong>直接运行这个函数：</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; <span class="function"><span class="keyword">function</span> <span class="title">xrange</span><span class="params">($start, $limit, $step = <span class="number">1</span>)</span> </span>&#123;</span><br><span class="line">...   <span class="keyword">for</span> ($i = $start; $i &lt;= $limit; $i += $step) &#123;</span><br><span class="line">...     <span class="keyword">echo</span> <span class="string">"call me"</span>;  &lt;------</span><br><span class="line">...     <span class="keyword">yield</span> $i;                |</span><br><span class="line">...   &#125;                          |</span><br><span class="line">... &#125;                            |</span><br><span class="line">=&gt; <span class="keyword">null</span>                          |</span><br><span class="line">&gt;&gt;&gt; $gen = xrange(<span class="number">1</span>,<span class="number">3</span>)   <span class="comment"># &lt; --- 注意看没有执行echo,没有任何输出。它</span></span><br><span class="line">=&gt; Generator &#123;<span class="comment">#176&#125;      # &lt; --- 显示它是一个Generator</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>调用<code>current()</code>函数可以<strong>唤醒</strong>(Resume)生成器，执行到<code>yield</code>关键字的地方继续<strong>暂停</strong>(Suspends)，继续往下执行需要执行<code>next()</code>。即<code>yield</code>可以产生<strong>中断点</strong>。</p>
+<blockquote>
+<p> 这个和Python不一样哦。Python是直接调用next的(虽然可以使用装饰器)</p>
+</blockquote>
+</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; $gen-&gt;current();  <span class="comment">// &lt;--- 注意这一行也只执行了第一个echo.</span></span><br><span class="line">call me⏎             <span class="comment">// 执行完current之后,生成器里面的代码会继续往后执行，</span></span><br><span class="line">=&gt; <span class="number">1</span>                 <span class="comment">// 直到遇到yield这个关键字，然后继续暂停.</span></span><br><span class="line">   ^----注意这个<span class="number">1</span>是来自<span class="keyword">yield</span>后面的$i所产生而返回的,即<span class="keyword">yield</span>将$i返回给了调用者。</span><br><span class="line">&gt;&gt;&gt; $gen-&gt;next();</span><br><span class="line">call me⏎             <span class="comment">// 执行到第二次循环，然后输出.</span></span><br><span class="line">=&gt; <span class="keyword">null</span> </span><br><span class="line">&gt;&gt;&gt; $gen-&gt;current();  <span class="comment">// 现在拿到的是$i=2的时候。</span></span><br><span class="line">=&gt; <span class="number">2</span></span><br></pre></td></tr></table></figure>
+<p>如上，因为生成器是需要的时候(执行<code>next()</code>)才会执行。不会贪婪的一次性生成所有数据放在内存中，而是特别的懒，我们称为<strong>惰性求值( Lazy Evaluation)</strong>，所以内存占用很小。也许你也注意到了，我们可以一直<code>next()</code>调用往下执行，但是并没有<code>prev</code>之类的接口。所以生成器属于 <strong>One-time Operation</strong>，一次性操作。因此上面的<code>xrange</code> 你只能遍历一次，<strong>如果想要多次，你必须得重新调用一次生成器</strong>。</p>
+<ul>
+<li>不同于<code>return</code>返回的是一个value,  <code>yield</code>可以让你产生一系列的值。</li>
+</ul>
+<h1 id="yield-使用场景"><a href="#yield-使用场景" class="headerlink" title="yield 使用场景"></a>yield 使用场景</h1><p><code>yield</code> 最容易让人想到的一个点就是可以让一个普通的函数随便变成高大上的生成器，而生成器是可以迭代的。即<code>yield</code>作为最简单的用途来说，就是可以放在循环中，一直迭代数据。</p>
+<p>但其实从 Python 中 <code>yield</code> 的作用来看，主要被分成了三种类型( 参见 <a href="http://www.dabeaz.com/coroutines/Coroutines.pdf" target="_blank" rel="noopener">PPT</a>)：</p>
+<ul>
+<li><a href="http://php.net/manual/zh/class.iterator.php" target="_blank" rel="noopener">迭代器 Iterator</a> 可以作为生产者产生数据</li>
+<li>接受消息  可以作为消费者接受数据</li>
+<li><a href="https://www.wikiwand.com/en/Trap_(computing)" target="_blank" rel="noopener">陷阱 Trap</a> 可以实现多任务调度</li>
+</ul>
+<p>PHP 亦是如此。下文以 PHP 为例子，把三种方式都简单记录一下。</p>
+<h2 id="生产者"><a href="#生产者" class="headerlink" title="生产者"></a>生产者</h2><p>如前文，当<code>yield</code>放在一个循环中，我们可以利用<code>yield</code> 作为生产者产生有限或者无限的数据。如前文提到的 <code>xrange</code> 这种基础用法。考虑这样的一种情况:</p>
+<p>我需要打开一个日志文件，然后将所有符合某种规则的日志行全部提取出来，然后需要对这些行进行一定的处理，然后做展示，大概这样:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">foreach</span>($lines <span class="keyword">as</span> $line) &#123;</span><br><span class="line">    <span class="comment">// 可能有逻辑其他处理</span></span><br><span class="line">  	<span class="keyword">if</span> (preg_match($regex, $line)) &#123;</span><br><span class="line">       <span class="comment">// 此条件下其他处理逻辑</span></span><br><span class="line">      	$line = andParsedLine($line);</span><br><span class="line">        <span class="keyword">if</span> ($isDuplcaite($line)) &#123;</span><br><span class="line">          	<span class="comment">// 其他逻辑</span></span><br><span class="line">          	<span class="keyword">echo</span> $line;</span><br><span class="line">        &#125;</span><br><span class="line">  	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这就是传说中的 <a href="https://www.wikiwand.com/en/Pyramid_of_doom_(programming)" target="_blank" rel="noopener">Pyramid of doom（金字塔厄运）</a>，大概这样<img src="/assets/img/pyramid-of-doom.jpg" alt="Pyramid of doom"></p>
+<p>这个流程其实很类似于我们 Linux 下的管道:</p>
+<p><code>grep xxx file | awk xxxx | sort | uniq | head ...</code></p>
+<p>同样的道理，我们可以把函数封装成这样 =&gt; <code>functionC(functionB(functonA()))</code> 从而避免或者减少金字塔厄运(事实上，为了解决这样的问题，还有比如<code>Promise</code>，<code>Thunk</code>很多玩意儿):</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 一行一行的读文件(产生数据)</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">readByLine</span><span class="params">($file)</span> </span>&#123;</span><br><span class="line">	$f = fopen($file, <span class="string">'r'</span>);</span><br><span class="line">	<span class="keyword">while</span> (!feof($f)) &#123;</span><br><span class="line">		<span class="keyword">yield</span> $f;</span><br><span class="line">	&#125;</span><br><span class="line">	fclose($f);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 使用正则过滤(继续生产数据)</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">grep</span><span class="params">($gen, $regex)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">foreach</span> ($gen <span class="keyword">as</span> $line) &#123;</span><br><span class="line">		<span class="keyword">if</span> (preg_match($regex, $line)) &#123;</span><br><span class="line">			<span class="keyword">yield</span> $line;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 现实文件的前n行(还是生产数据)</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">head</span><span class="params">($gen, $n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	$current = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">foreach</span> ($gen <span class="keyword">as</span> $line) &#123;</span><br><span class="line">		<span class="keyword">if</span> ($current &gt; $n) &#123;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">echo</span> $line;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">head(grep(readByLine(<span class="string">"/www/xxxx.log"</span>), <span class="string">'xxxxx'</span>), <span class="number">3</span>);</span><br></pre></td></tr></table></figure>
+<p>因为 <code>yield</code> 是惰性求值的，在需要的时候才会做计算，我们不用担心这样的代码会出现内存过大之类的问题。（相反，如果上述代码换成 <code>return</code>来写，就可能会爆哦）</p>
+<p>很多时候,  PHP 中一些自带的函数 <code>array_map</code>, <code>array_filter</code>, <code>array_column</code>等等，我们都可以用 <code>yield</code>  将其替换为 <strong>生成器</strong> (Python中这些API已经如此了) </p>
+<p><strong>题外话</strong>: <a href="https://3v4l.org/hQPpe#output" target="_blank" rel="noopener">https://3v4l.org/hQPpe</a></p>
+<blockquote>
+<p>PHP 5.x 的时候生成器方案比普通快。<br>PHP 7.x 的时候生成器方案比普通慢。<br>在 HHVM 上 普通方案的速度太快(比生成器快接近3倍)</p>
+</blockquote>
+<p>前文提到过<strong>协程</strong>, <strong>中断点</strong> 我们还没有接触，显然可以知道<code>yield</code>的作用其实还有很多。</p>
+<h2 id="消费者"><a href="#消费者" class="headerlink" title="消费者"></a>消费者</h2><p> <code>Generator</code> 不仅仅实现了<code>Iterator</code>接口, 而且还有自定义的一些方法，比如<code>send()</code>。</p>
+<p>这个<code>send</code>可不得了，它可以实现所谓的<strong>双向通讯</strong>。具体来说，上面我们处理日志的流程是这样的:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">                 +------------+     +------+    +------+</span><br><span class="line">/www/xxxx.log --&gt;| readByLine |+---&gt;| grep |+--&gt;| head |+--&gt;</span><br><span class="line">                 +------------+     +------+    +------+</span><br></pre></td></tr></table></figure>
+<p>可以发现，<strong>无论是<code>grep</code>还是<code>head</code>，它们都是自己主动去<code>Pull</code>之前的数据</strong>。我们仅仅用到了<code>yield</code>的返回功能，还差发送功能。</p>
+<p>现在我们看一下 <a href="http://php.net/manual/zh/generator.send.php" target="_blank" rel="noopener">Generator::send</a></p>
+<blockquote>
+<p>向生成器中传入一个值，并且当做 <a href="http://php.net/manual/zh/language.generators.syntax.php#control-structures.yield" target="_blank" rel="noopener">yield</a> 表达式的结果，然后继续执行生成器。</p>
+<p>如果当这个方法被调用时，生成器不在 <a href="http://php.net/manual/zh/language.generators.syntax.php#control-structures.yield" target="_blank" rel="noopener">yield</a> 表达式，那么在传入值之前，它会先运行到第一个 <a href="http://php.net/manual/zh/language.generators.syntax.php#control-structures.yield" target="_blank" rel="noopener">yield</a> 表达式</p>
+</blockquote>
+<p>这基本就是 PHP 中实现 <a href="https://www.wikiwand.com/zh-hans/%E5%8D%8F%E7%A8%8B" target="_blank" rel="noopener"><strong>协程</strong></a> 的原理，然而 PHP 里面严格意义上叫做半协程(semicoroutines),因为控制权并没有真正的协程那么自由:</p>
+<blockquote>
+<p><a href="https://www.wikiwand.com/en/Generator_(computer_science" target="_blank" rel="noopener">Generators</a>), also known as semicoroutines。while both of these can yield multiple times, suspending their execution and allowing re-entry at multiple entry points, they differ in that coroutines can control where execution continues after they yield, while generators cannot, instead transferring control back to the generator’s caller.<a href="https://www.wikiwand.com/en/Coroutine#citenote6" target="_blank" rel="noopener">[6]</a> That is, since generators are primarily used to simplify the writing of <a href="https://www.wikiwand.com/en/Iterator" target="_blank" rel="noopener">iterators</a>, the <code>yield</code>statement in a generator does not specify a coroutine to jump to, but rather passes a value back to a parent routine.</p>
+</blockquote>
+<p>不过我一直觉得概念其实并没有那么的重要，不用太过于纠结。</p>
+<p>看到这个函数，我们需要想到几点:</p>
+<ul>
+<li>调用<code>send</code>时，我们会去唤醒之前协程有 <code>yield</code> 表达式的地方。</li>
+<li>这时候执行权在协程那边，您可以理解为 Goto 语句。</li>
+<li>当遇到下一次<code>yield</code>的时候，才会把数据返回，并且交回控制权。</li>
+</ul>
+<p>我们还是来看一下 <code>yield</code> 作为消费者的话，以 <code>grep</code> 举例:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 可以作为消费者接受数据的grep.</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">grep</span><span class="params">($regex)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">		$line = <span class="keyword">yield</span>;  <span class="comment">// &lt;-- 可以从这里接受一个数据(通过generator-&gt;send传递给他.)</span></span><br><span class="line">		<span class="keyword">if</span> (preg_match($regex, $line)) &#123;</span><br><span class="line">			<span class="keyword">echo</span> <span class="string">"Matched: &#123;$line&#125;\n"</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment"># &gt;&gt;&gt; $filter-&gt;send("python generator");</span></span><br><span class="line"><span class="comment"># =&gt; null</span></span><br><span class="line"><span class="comment"># &gt;&gt;&gt; $filter-&gt;send("shellvon");</span></span><br><span class="line"><span class="comment"># Matched: shellvon</span></span><br></pre></td></tr></table></figure>
+<p>如上面的代码所示，我们原来的处理流程可以变成这样:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">   <span class="keyword">as</span> source     +------+  send() +------+ send()  +--------+</span><br><span class="line">/www/xxxx.log --&gt;| grep |+-------&gt;| head |+-------&gt;| output |</span><br><span class="line">                 +------+         +------+         +--------+</span><br></pre></td></tr></table></figure>
+<p>如上图所示，上图有几个特点:</p>
+<ul>
+<li>您可以使用 <code>send()</code>方法<strong>把数据push给下一个操作逻辑</strong>，<span style="color:red">注意与之前迭代器的Pull相比较</span></li>
+<li>您可能发现 <code>readByLine</code> 没有在上图出现，那是因为上图画的都是<strong>消费者</strong>，不是生产者。<code>readByLine</code> 其实还是存在，以生产者身份。<strong>而这样一个典型的管道操作是需要有一个数据源的，即生产者</strong>。</li>
+<li>生产者显然不是一个协程，<code>readByLine</code>可以仍然保持之前的迭代器，通过<code>send</code>将数据发出来。</li>
+</ul>
+<p>如果脑洞更加大一点, 相比于之前的 Pull，我们 Push 的时候，可以同时 send 给多个消费者。更加复杂:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">                           +-----------+</span><br><span class="line">                   +------&gt;| coroutine |+- - - - - - - +</span><br><span class="line">                   |       +-----------+               |</span><br><span class="line">           +-------+--+    +-----------+          +-----------+</span><br><span class="line">source+---&gt;|coroutine |---&gt;| coroutine |+-  - - -&gt;| coroutine |       </span><br><span class="line">           +-------+--+    +-----------+          +-----------+</span><br><span class="line">                   |       +-----------+               |</span><br><span class="line">                   +------&gt;| coroutine |+- - - - - - - +</span><br><span class="line">                           +-----------+</span><br></pre></td></tr></table></figure>
+<p>当然，多个消费者最后可以再 <code>send</code> 给同一个 pipe ， 聚合回来。</p>
+<p>另外，其实我们的 <code>source</code> 本身来源也可以不唯一。比如我们可以使用 <a href="http://php.net/manual/zh/book.spl.php" target="_blank" rel="noopener">PHP SPL</a> 中提供的一些有用组件: <a href="http://php.net/manual/zh/class.multipleiterator.php" target="_blank" rel="noopener">MultipleIterator</a> 和 <a href="http://php.net/manual/zh/class.appenditerator.php" target="_blank" rel="noopener">AppendIterator</a>，之前的 <code>head</code> 我们可以使用 <a href="http://php.net/manual/zh/class.limititerator.php" target="_blank" rel="noopener">LimitIterator</a>。</p>
+<p>甚至，按照 <a href="http://www.dabeaz.com/" target="_blank" rel="noopener">Dabeaz</a> 大神的说法，我们的来源和 <code>send</code>的 目标也好，不一定非要是字符串，非要是文件。</p>
+<h2 id="陷阱"><a href="#陷阱" class="headerlink" title="陷阱"></a>陷阱</h2><p>这里的<a href="https://www.wikiwand.com/en/Trap_(computing)" target="_blank" rel="noopener">陷阱</a>是指计算机专业术语，我在 <a href="https://github.com/chyyuu/ucore_os_docs/blob/master/lab1/lab1_3_3_2_interrupt_exception.md" target="_blank" rel="noopener">Github</a> 找到了一个中文解释: </p>
+<blockquote>
+<p>程序中使用请求系统服务的系统调用而引发的事件，称作陷入中断(trap interrupt)，也称软中断(soft interrupt)，系统调用(system call)简称trap。</p>
+</blockquote>
+<p>之所以用到这个概念，主要原因是因为我们的 <code>yield</code> 可以产生<strong>中断点</strong>与操作系统的 Trap 很类似。即：</p>
+<p>我们可以利用 <code>yield</code> 会获取(通过你send数据给它)与返回控制权这个特性完成一个类似操作系统的<strong>调度器</strong>。</p>
+<p>这就是文章开始提到的 <a href="http://www.laruence.com/2015/05/28/3038.html" target="_blank" rel="noopener">在PHP中使用协程实现多任务调度</a> 的内容(PHP Generator的发明人 <a href="https://nikic.github.io/aboutMe.html" target="_blank" rel="noopener">Nikita Popov</a> 在PHP的 rfc 中也说到了<a href="http://www.dabeaz.com/" target="_blank" rel="noopener">Dabeaz</a> 大神的 <a href="http://www.dabeaz.com/coroutines/Coroutines.pdf" target="_blank" rel="noopener">PPT</a>，所以我觉得他的这篇文章应该也是受到此 PPT 的影响，具体参见 Part6 及其 Part7)</p>
+<p>所以其实本章节更好的题目应该是 <strong>利用协程完成多任务调度</strong>。因为中文/英文都特别详细，我就不用做啥笔记了。附上地址:</p>
+<ul>
+<li>中文:  <a href="http://www.laruence.com/2015/05/28/3038.html" target="_blank" rel="noopener">在PHP中使用协程实现多任务调度</a></li>
+<li><p>英文: <a href="https://nikic.github.io/2012/12/22/Cooperative-multitasking-using-coroutines-in-PHP.html" target="_blank" rel="noopener">Cooperative multitasking using coroutines (in PHP!)</a></p>
+<p><strong>题外话</strong>:</p>
+</li>
+</ul>
+<blockquote>
+<p>因为<a href="https://nikic.github.io/aboutMe.html" target="_blank" rel="noopener">Nikita Popov</a> 的那篇 Cooperative multitasking using coroutines in PHP， 目前其实已经有不少的项目和文章了，比如:</p>
+<ul>
+<li><a href="https://www.gitbook.com/book/goghcrow/php-co-koa" target="_blank" rel="noopener">PHP异步编程: 手把手教你实现co与Koa</a></li>
+<li><a href="https://github.com/pinguo/php-msf" target="_blank" rel="noopener">https://github.com/pinguo/php-msf</a></li>
+<li><a href="http://zanphp.io/" target="_blank" rel="noopener">http://zanphp.io/</a></li>
+</ul>
+</blockquote>
+<h1 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h1><p>在学习协程和生成器的时候，我检索了各种关键字，其中发现了不少我个人觉得营养价值比较高的文章或者博客，我作为附录放这里，希望我每一次看的时候都能学到更多。</p>
+<ul>
+<li><p><a href="https://blog.youxu.info/2014/12/04/coroutine/" target="_blank" rel="noopener">编程珠玑番外篇-Q 协程的历史，现在和未来</a></p>
+</li>
+<li><p><a href="https://github.com/chyyuu/simple_os_book/blob/master/zh/chapter-4/process_schedule_principal.md" target="_blank" rel="noopener">操作系统简单实现与基本原理</a></p>
+</li>
+<li><p><a href="https://markbakeruk.net/2016/01/19/a-functional-guide-to-cat-herding-with-php-generators/" target="_blank" rel="noopener">A Functional Guide to Cat Herding with PHP Generators</a></p>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>感谢支持</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/assets/img/wechat.png" alt="shellvon 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/assets/img/alipay.png" alt="shellvon 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    shellvon
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://von.sh/2017/12/06/php-generator-note/" title="PHP Generator 笔记">http://von.sh/2017/12/06/php-generator-note/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Generator/" rel="tag"># Generator</a>
+          
+            <a href="/tags/PHP/" rel="tag"># PHP</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/01/a-new-beginning-again/" rel="next" title="又一次新的开始">
+                <i class="fa fa-chevron-left"></i> 又一次新的开始
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMjA5Mi84NjU2"></div>
+    </div>
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://avatars2.githubusercontent.com/u/3349696?s=360&v=4"
+                alt="shellvon" />
+            
+              <p class="site-author-name" itemprop="name">shellvon</p>
+              <p class="site-description motion-element" itemprop="description">好好学习,天天向上</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/shellvon" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:iamshellvon@gmail.com" target="_blank" title="邮箱">
+                    
+                      <i class="fa fa-fw fa-envelope"></i>邮箱</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.zhihu.com/people/shell-von" target="_blank" title="知乎">
+                    
+                      <i class="fa fa-fw fa-globe"></i>知乎</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.facebook.com/iamshellvon" target="_blank" title="脸书">
+                    
+                      <i class="fa fa-fw fa-facebook"></i>脸书</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-globe"></i>
+                小伙伴们
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://blog.kimleo.net/" title="kimLeo" target="_blank">kimLeo</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://plusplus7.com" title="plus7" target="_blank">plus7</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://esrever10.cc/" title="esrever10" target="_blank">esrever10</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://ixvii0iv.xyz/" title="ixvii0iv" target="_blank">ixvii0iv</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://tingoo.github.io/" title="tingoo" target="_blank">tingoo</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序"><span class="nav-number">1.</span> <span class="nav-text">序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#yield的概念"><span class="nav-number">2.</span> <span class="nav-text">yield的概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#迭代器协议"><span class="nav-number">2.1.</span> <span class="nav-text">迭代器协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生成器"><span class="nav-number">2.2.</span> <span class="nav-text">生成器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#yield-使用场景"><span class="nav-number">3.</span> <span class="nav-text">yield 使用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#生产者"><span class="nav-number">3.1.</span> <span class="nav-text">生产者</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消费者"><span class="nav-number">3.2.</span> <span class="nav-text">消费者</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#陷阱"><span class="nav-number">3.3.</span> <span class="nav-text">陷阱</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#附录"><span class="nav-number">4.</span> <span class="nav-text">附录</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shellvon</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+
+
+
+
+  <div class="footer-custom">旧版博客 <a target="_blank" href="http://von.sh/TerminalBlog">TerminalBlog</a></div>
+
+
+        
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=64270194";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.3"></script>
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("6l7HRFXHGk9Lgv46OV1SwC1e-gzGzoHsz", "ThoguKU5TEwKs9X4lDmcqAsb");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

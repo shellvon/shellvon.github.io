@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Regex,文本处理," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="shellvon的博客" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="有一些人，遇到一个问题时就想：“我知道，我会使用正则表达式。” 然后他就有两个问题了。–by Jamie Zawinski">
+<meta name="keywords" content="Regex,文本处理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="30分钟学正则">
+<meta property="og:url" content="http://von.sh/2017/11/29/learn-regex-in-30-minutes/index.html">
+<meta property="og:site_name" content="shellvon的博客">
+<meta property="og:description" content="有一些人，遇到一个问题时就想：“我知道，我会使用正则表达式。” 然后他就有两个问题了。–by Jamie Zawinski">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://von.sh/assets/img/ipv4-regex.svg">
+<meta property="og:image" content="http://von.sh/assets/img/regex101.png">
+<meta property="og:updated_time" content="2017-12-01T12:18:41.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="30分钟学正则">
+<meta name="twitter:description" content="有一些人，遇到一个问题时就想：“我知道，我会使用正则表达式。” 然后他就有两个问题了。–by Jamie Zawinski">
+<meta name="twitter:image" content="http://von.sh/assets/img/ipv4-regex.svg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'XTTY5R68BV',
+      apiKey: '28b572f0f162a057439f018c40e8034f',
+      indexName: 'prod_von_post',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"搜索你要的文章","hits_empty":"很遗憾,没有找到: ${query}","hits_stats":"找到 ${hits} 条记录,耗时 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://von.sh/2017/11/29/learn-regex-in-30-minutes/"/>
+
+
+
+
+
+  <title>30分钟学正则 | shellvon的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">shellvon的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">菜鸟一枚</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-日志">
+          <a href="/changelog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-university"></i> <br />
+            
+            日志
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://von.sh/2017/11/29/learn-regex-in-30-minutes/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shellvon">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/3349696?s=360&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="shellvon的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">30分钟学正则</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-29T13:56:18+08:00">
+                2017-11-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/11/29/learn-regex-in-30-minutes/" class="leancloud_visitors" data-flag-title="30分钟学正则">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="/assets/img/ipv4-regex.svg" alt="IPv4"></p>
+<blockquote>
+<p>有一些人，遇到一个问题时就想：“我知道，我会使用正则表达式。” 然后他就有两个问题了。<br>–by <strong>Jamie Zawinski</strong></p>
+</blockquote>
+<a id="more"></a>
+<p>前些天优化一个 API 的时候，我在代码中发现一个正则就在群里随便乱吐槽了几句。然后leader就突然兴起让我给团队内来一场正则表达式的分享。对了，我吐槽的这个正则长这样:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">^[a-z]([a-z0-9]*[-_\.]?[a-z0-9]+)*@([a-z0-9]*[-_]?[a-z0-9]+)+[\.][a-z]&#123;2,3&#125;([\.][a-z]&#123;2&#125;)?$</span><br></pre></td></tr></table></figure>
+<p>当时我只说写这么长且无用的正则，简直了….</p>
+<ol>
+<li>各位知道这个正则是做什么的么?</li>
+<li>各位知道当匹配<code>iamshellvon@gmail.c</code>这种会有多少次回溯么？</li>
+</ol>
+<h1 id="序"><a href="#序" class="headerlink" title="序"></a>序</h1><p>文本处理工具，大家想到的绝对会有正则表达式(<a href="https://www.wikiwand.com/zh-hans/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F" target="_blank" rel="noopener">Regular Expressions</a>)这个大佬，在当今的编程语言中，也找不出几个不支持正则的(有，当然有，比如 <a href="https://www.wikiwand.com/zh-hans/Brainfuck" target="_blank" rel="noopener">brainfuck</a>) ，我周围的程序员也没有没接触过正则的。不过，接触了不代表就懂正则了。</p>
+<blockquote>
+<p>“我也不知道它是怎么工作的，反正跑起来正常就行了”<br>–by <strong>匿名用户</strong></p>
+</blockquote>
+<p>其实，正则表达式并没有那么那么的晦涩难懂，高大上，它不过是一个普通的 DSL 罢了，复杂的文本处理，也不应该用正则，而应该考虑比如 <code>flex/bison</code> 这种 parser 了。</p>
+<h1 id="正则基础"><a href="#正则基础" class="headerlink" title="正则基础"></a>正则基础</h1><h2 id="什么是正则表达式"><a href="#什么是正则表达式" class="headerlink" title="什么是正则表达式?"></a>什么是正则表达式?</h2><p><a href="https://www.wikiwand.com/zh-hans/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F" target="_blank" rel="noopener">Regular Expression</a>，简称 RE/Regex。用于匹配字符串中字符组合的模式。我们可以通过认识集合中有限的字符(正则表达式中的元字符)来识别属于这种集合的任意多的其他字符。<br>这样来讲，其实你之前已经接触过正则了，只是你不知道而已。比如:</p>
+<ul>
+<li>Ctrl + F<br>  字符串子串匹配问题， 本质上也是正则。</li>
+<li>echo “shellvon” | grep von<br>  我们在命令行下经常使用的 grep，其实你的 <code>von</code> 也算正则了<br>…</li>
+</ul>
+<p>可是当我们要匹配的都是数字或者都是字母的时候。或者100个相同字母的时候，写起来就啰嗦复杂了。也谈不上模式！所以呢，我们引入了一种这样功能的字符: <strong>自己不代表自己原本含义，而都有特殊含义的字符</strong>。比如，我希望点号 <code>.</code>可以匹配任意字符，具有这种功能的字符，我们称之为 <strong>元字符(metacharacters)</strong> </p>
+<h2 id="元字符"><a href="#元字符" class="headerlink" title="元字符"></a>元字符</h2><p>生活中，我们也早已经接触过所谓的元字符了。比如:</p>
+<ul>
+<li>互联网脏话 -&gt; 用<code>*</code>给替代了</li>
+<li>二胖Plus、鑫胖、金三月半、鑫月半、金三肥 -&gt; 真实含义代表啥大家也知道<br>…</li>
+</ul>
+<p>正则表达式里面有许多这样的<code>元字符</code>，这些<code>元字符</code>构成一个有限子集，让我们可以利用这个有限子集去识别和匹配无限可能的文本。</p>
+<table>
+<thead>
+<tr>
+<th>元字符</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>^和$</td>
+<td>行的开始^和结束$</td>
+</tr>
+<tr>
+<td>[]和[^]</td>
+<td>字符组[]和排除型[^]</td>
+</tr>
+<tr>
+<td>-</td>
+<td>连字符，必须出现在字符组内，表示范围比如[0-9]</td>
+</tr>
+<tr>
+<td>.</td>
+<td>匹配任意字符(可能会排除\n哦)</td>
+</tr>
+<tr>
+<td>*和+</td>
+<td>量词，匹配该字符之前的字符，*是&gt;=0次，+是&gt;=1次</td>
+</tr>
+<tr>
+<td>{n}和{n,}和{n,m}</td>
+<td>区间量词，匹配次数{n}匹配n次，{n,m}匹配n~m次</td>
+</tr>
+<tr>
+<td>&#124;</td>
+<td>或者</td>
+</tr>
+<tr>
+<td>?</td>
+<td>量词，标记?前的字符为可选</td>
+</tr>
+<tr>
+<td>()</td>
+<td>字符集，标记完全匹配括号内的数据</td>
+</tr>
+<tr>
+<td>\</td>
+<td>转义，用于匹配一些保留字符(比如元字符)</td>
+</tr>
+</tbody>
+</table>
+<p>如上表，这些字符出现在正则里面的时候，通常都不代表本来的含义。关于上表，还有几点需要注意:</p>
+<ul>
+<li>脱字符<code>^</code>必须出现在文本开头，美元符<code>$</code>必须出现在行尾</li>
+<li>排除形里面也出现了脱字符<code>^</code>，代表排除时也必须出现在中括号[]内的第一个字符，否则不具有此含义。</li>
+<li>连字符，顾名思义，必须具有起止字符，否则就是自己本来的意思。比如[-]代表匹配自己，特殊一点的是[a-c-d]由于a-c已经表示了范围，后面的<code>-</code>就找不到开始范围，那么第二个<code>-</code>就代表自己，所以匹配的是<code>abc-d</code>这5个字符。</li>
+</ul>
+<p>我们来看元字符的一些例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&quot;[Tt]he&quot; =&gt; The car parked in the garage</span><br><span class="line">            ^^^               ^^^</span><br><span class="line">&quot;[^c]ar&quot; =&gt; The car parked in the garage</span><br><span class="line">                    ^^^           ^^^</span><br><span class="line">&quot;c.+t&quot; =&gt; The fat cat sat on the mat</span><br><span class="line">                  ^^^^^^^^^^^^^^^^^^</span><br><span class="line">                   ¦----被(.+)匹配-¦</span><br><span class="line">&quot;b.g&quot; =&gt; baidugoogle big bug bag</span><br><span class="line">                     ^^^ ^^^ ^^^</span><br></pre></td></tr></table></figure></p>
+<p>如你所见，我们正则的表达式匹配流程会是从左边往右边挨个来，就像你读本文如此。<br>这些元字符可不简单，万丈高楼也是靠它们。</p>
+<h2 id="子表达式"><a href="#子表达式" class="headerlink" title="子表达式"></a>子表达式</h2><p>在算法领域有个很好的思想叫做 <strong>分治法</strong> 。当我们遇到一个复杂的需求，我们总是可以拆解成无数个小的问题，然后尝试去解决小问题，最后这些小问题的答案来解决大问题。正则表达式亦是如此。<br>一个复杂的正则表达式都是由一些简单的正则表达式组合起来的。这些简单的正则我们称之为 <strong>子表达式</strong> 。它们通常是指用 <code>|</code> 分割的多选分支或者括号内的表达式。<br>比如<code>gr(e|a)y</code>。我们可以将(e|a)看成子表达式，其中<code>e</code>和<code>a</code>也可以看成子表达式，严格意义上讲，上述的<code>g</code>/<code>r</code>/<code>y</code>等也算子表达式。不过这样太细了意义也不大。我们主要还是关注竖线|分割和括号()包围起来的更有意思。<br>首先，考虑这样一个问题:<br>如果需要让你用刚学的<strong>元字符</strong>去匹配一个<code>0-23</code>的范围的数字(比如时间刚好这个范围)怎么办？哦，天啦，你可能会说<code>[0-23]</code> 刚好啊，因为<code>-</code>可以表示范围，很遗憾，并不行，通常<code>-</code>能表示的开始和结束都只有一个字符(虽然16进制这种就不是了)，但是你要知道，上述表达式的真实含义是匹配<code>[0123]</code>这四个数字。<br>这个可以参见我前文提到的关于连字符<code>-</code>的注意事项。这种方式不可行，另外一个最容易想到的就是拆分它，我们可以利用<strong>子表达式</strong>这个概念。<br>怎么拆呢？</p>
+<pre><code>1. `[0-9]` 可以匹配范围个位数
+2. `1[0-9]` 可以匹配10-19的
+3. `2[0-3]` 可以匹配20-23的
+</code></pre><p>显然，最后用元字符<code>|</code>(代表或)将他们连接起来就符合要求了撒。</p>
+<p>如果更加复杂一点呢，比如要匹配一个 IPv4 地址呢？其实原理一样，只是数字范围变成了0-255。这正如文章开头的图中所示。</p>
+<p>更为复杂的就是，考虑匹配一个日期，需要考虑月份和天数的关系，甚至还有闰年(通常这种时候你还要用正则的话，你估计已经开始过度使用正则了，你需要避免这样)</p>
+<h2 id="简写"><a href="#简写" class="headerlink" title="简写"></a>简写</h2><p>懒惰是程序员的美德之一。在上面的例子中我们写[0-9]要写5个字符，有没有更简写的呢？</p>
+<table>
+<thead>
+<tr>
+<th>简写字符</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>.</td>
+<td>匹配任意字符</td>
+</tr>
+<tr>
+<td>\d和\D</td>
+<td>\d表示数字，\D非数字</td>
+</tr>
+<tr>
+<td>\w和\W</td>
+<td>\w等效于[a-zA-Z0-9_]，\W相反</td>
+</tr>
+<tr>
+<td>\s和\S</td>
+<td>\s匹配所有空格字符，\S相反</td>
+</tr>
+</tbody>
+</table>
+<p>举个例子:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&quot;\d&#123;2,3&#125;&quot; =&gt; The number was 9.9997.</span><br><span class="line">                              ^^^</span><br><span class="line">&quot;car\sis&quot; =&gt; The car is parked.</span><br><span class="line">                 ^^^^^^</span><br><span class="line">&quot;^\d+&quot; =&gt; 13 is less than 18.</span><br><span class="line">          ^^</span><br></pre></td></tr></table></figure></p>
+<h2 id="捕获-非捕获与反向引用"><a href="#捕获-非捕获与反向引用" class="headerlink" title="捕获,非捕获与反向引用"></a>捕获,非捕获与反向引用</h2><p>目前为止，我们知道括号可以用在<a href="#子表达式">子表达式</a>中，表示完整的一个整体。括号另外还有一个作用是 <strong>捕获</strong> 。所谓捕获，就是指正则引擎(正则的大脑)可以<code>记住</code>匹配的结果，会给这些结果取一个小名，用于之后的用途，取名规则是这样的:<br>每个括号从左向右以左括号为标志，会自动拥有一个组号，从1开始。<br>比如: <code>(hello (world (regex)))</code><br>分组如下:</p>
+<pre><code>1. hello world regex &lt;-- 第一个组，组号为1，后面以此类推
+2. world regex       &lt;-- 第二个组
+3. regex              &lt;-- 第三个组，因为左括号出现的比较晚
+</code></pre><p>这样有个好处，我们可以在正则里面通过组号拿之前匹配的结果，这种方式叫做 <strong>反向引用</strong> 。</p>
+<p>举个例子:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">“([ab])\1” =&gt; abcdebbcde</span><br><span class="line">                   ^^</span><br><span class="line">                    ¦-----这个`b`就是因为前面的([ab])匹配到了一个字符b。我们可以用\1来引用起之前结果</span><br></pre></td></tr></table></figure></p>
+<p>显然，有时候我们并不需要捕获（不然数字一直在增大的同时，让正则脑袋记那么多内容，效率也不好），所以与之对应的还有 <strong>非捕获</strong>。写法很相似:<code>(?:pattern)</code>。一个更具体的对比表如下:</p>
+<table>
+<thead>
+<tr>
+<th>语法</th>
+<th>含义</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(pattern)</td>
+<td>匹配pattern并捕获结果，自动设置组号</td>
+<td>(\d{2})+\d</td>
+</tr>
+<tr>
+<td>(?:pattern)</td>
+<td>匹配pattern,但是不捕获    hell(?:o&#124;y)</td>
+<td>匹配hello/helly</td>
+</tr>
+</tbody>
+</table>
+<p>显然，如果一个复杂的表达式里面引入过多的<code>非捕获</code>，虽然可以减少正则引擎去记忆，但是这也会增加我们阅读正则表达式的难度，所以，请深思熟虑是否有必要为了这么一点性能而用非捕获。<br>另一方面，在复杂的正则表达式中如果全部使用了捕获，试想一下这种情况:<br>有天你突然把某个括号删除了，或者需要在中间某处增加一个括号，会产生什么样的影响？<br>聪明的你应该想到了，会导致组号的变更。比如原来是\3,现在可能变成了\2或者\4，或者其他。<br>所以捕获如果按照数字取名字实在不是很好。于是写 Python 正则的那群人说，要不给这些组取名字的事情交给用户吧，比如叫<code>张三</code>，<code>李四</code>。这种技术叫做<br><strong>命名捕获</strong>。大概是这么写的<code>(?P&lt;myname&gt;hello)</code> 它不仅具有原来数字的乳名\1，还有用户你自己为它取的名字<code>myname</code>。这种方式很棒，.Net觉得不错也抄袭了过去，只不过语法不一样罢了。更多的细节请参见:<br><a href="https://www.regular-expressions.info/named.html" target="_blank" rel="noopener">Named Capturing Groups and Backreferences</a></p>
+<h1 id="正则进阶"><a href="#正则进阶" class="headerlink" title="正则进阶"></a>正则进阶</h1><p>之前基础部分已经可以完成日常简单的需求了，甚至我们仔细想想可以知道正则最重要的两点原则:</p>
+<ul>
+<li>匹配先从需要查找的字符串的起始位置尝试匹配，是从左至右的。</li>
+<li>总是尝试匹配尽可能多的字符，我们称之为贪婪。</li>
+</ul>
+<p>第一点：<br>比如”Python”匹配 “i am Pythoner, i love Python.”; 正则匹配到 _Python_er, 而不是后面的 Python 。因为他是左边开始的，先找到谁就是谁。</p>
+<p>第二点: <a href="https://stackoverflow.com/questions/2301285/what-do-lazy-and-greedy-mean-in-the-context-of-regular-expressions" target="_blank" rel="noopener">贪婪(Greedy)</a>，我们的所有量词都是尽可能多的匹配！</p>
+<h2 id="贪婪与非贪婪"><a href="#贪婪与非贪婪" class="headerlink" title="贪婪与非贪婪"></a>贪婪与非贪婪</h2><p>还记得这个例子么？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&quot;c.+t&quot; =&gt; The fat cat sat on the mat</span><br><span class="line">                  ^^^^^^^^^^^^^^^^^^</span><br><span class="line">                   ¦----被(.+)匹配-¦</span><br></pre></td></tr></table></figure></p>
+<p>我们来描述一下这个流程:</p>
+<ol>
+<li>正则表达式的<code>c</code>开始不能匹配’T’,直到遇到单词’cat’中的’c’，于是宣告’c’匹配成功。开始尝试<code>.</code>来匹配后续</li>
+<li>正则表达式中的<code>.</code>开始匹配单词’cat’中的’.’，发现还是可以匹配。</li>
+<li>有趣的事情来了: 正则发现.后面有个+，即告诉我吃至少一个，那么我怎么抉择呢？答案是：<strong>我尽可能吃撑，吃到吃不下去为止–这就是贪婪。</strong></li>
+<li>于是.继续匹配,一路所向披靡，因为.啥字符都可以吃啊,然后走到了最后，单词’mat’中’t’的后面为止。发现没有匹配了，点号吃不下去了，就该让表达式<code>c.+t</code>中的<code>t</code>上场，发现t也不行，怎么办呢？难道宣告正则匹配失败？？不不不，毕竟<code>+</code>表示的1到多嘛，我可以通知.吐一个字符出来，让<code>t</code>试试呢</li>
+<li>于是.就吐出来了’t’,记住这时候<code>.+</code>已经吃下了’at sat on the ma’这么多字符。</li>
+<li>这时候发现<code>t</code>可以匹配’mat’中的’t’.这时候文本也是结束了，正则引擎宣告匹配成功！</li>
+</ol>
+<p>这就是贪婪，<code>.+</code>企图吃掉所有字符，可惜最后匹配失败，它很不情愿的吐出了最后一个字符’t’，然后才让正则匹配成功的。</p>
+<p>试想，如果<code>.+</code>不贪婪，很谦虚，那么我可以只吃一个字符’a’,让<code>t</code>取匹配’cat’中’t’.结果也会成功。但是却贪婪了。。<strong>贪婪与否会严重影响正则匹配的结果</strong></p>
+<p>所以用户可能会问了：<br>我怎么告诉正则引擎不贪婪呢？<br>我怎么告诉正则引擎如果我贪婪了，我也不想吐出来呢？（比贪婪还贪婪）</p>
+<p>这其实都很简单：<br><strong>在原来标准量词的后面加一个问号，即为<span style="color:red">忽略优先量词</span></strong><br><strong>在原来标准量词的后面加一个加号，即为<span style="color:red">占有优先量词</span></strong></p>
+<table>
+<thead>
+<tr>
+<th>语法</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>忽略优先</td>
+<td>*?，+? ，?? ，{n,m}?</td>
+</tr>
+<tr>
+<td>占有优先</td>
+<td>*+，++，?+，{n,m}+</td>
+</tr>
+</tbody>
+</table>
+<p>我们看一下这个例子:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&quot;.*shell&quot; =&gt; shellxxxxxshell</span><br><span class="line">             ^^^^^^^^^^^^^^^</span><br><span class="line">                       ¦----- 之前的shellxxxxx都被.*吃了,这种情况参见上一个关于贪婪的描述 </span><br><span class="line"></span><br><span class="line">&quot;.*?shell&quot; =&gt; shellxxxxxshell</span><br><span class="line">              ^^^^^</span><br><span class="line">              ¦---.*什么都不要，因为?告诉它忽略优先</span><br><span class="line"></span><br><span class="line">&quot;.*+shell&quot; =&gt; shellxxxxxshell</span><br><span class="line">什么都匹配不到，因为.*已经可以贪婪的吃掉整句话，有了+表示占有优先，吃了是不会吐出来的，</span><br><span class="line">所以啥都吃完了，也没有字符留给正则里面的shell来匹配了。导致整个匹配都会失败</span><br></pre></td></tr></table></figure></p>
+<h2 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h2><p>这个可能是最重要的一个环节。<br>工欲善其事，必先利其器。调试正则的话，也需要一个特别好的工具，我这里推荐在线的工具：<br><a href="https://regex101.com/" target="_blank" rel="noopener">https://regex101.com/</a><br>一两句无法说清，所以试图以图的形式简单介绍一下。<br><img src="/assets/img/regex101.png" alt="regex101.com"></p>
+<p>具体学习，还是请以 <strong>Learn by Practice</strong> 为准。而不是 <strong>Learn by manual</strong>。</p>
+<h2 id="环视"><a href="#环视" class="headerlink" title="环视"></a>环视</h2><p>前面我们提到过怎么查找不是某个字符或不在某个字符类里的字符的方法(使用[^])。但是如果我们只是想要确保某个字符没有出现，但并不想去匹配它时怎么办？<br>这时候我们需要查找它所在的位置！正则表达式里面匹配位置的在我们之前接触过的有<br><code>^</code>和<code>$</code>，前者是开始，后者是结束。</p>
+<table>
+<thead>
+<tr>
+<th>语法</th>
+<th>匹配条件</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(?&lt;=…)</td>
+<td>子表达式<strong>能</strong>匹配<span style="color:red">左侧</span>文本</td>
+<td>(?&lt;=[a-z])[A-Z]</td>
+</tr>
+<tr>
+<td>(?&lt;!…)</td>
+<td>子表达式<strong>不能</strong>匹配<span style="color:red">左侧</span>文本</td>
+<td></td>
+</tr>
+<tr>
+<td>(?=…)</td>
+<td>子表达式<strong>能</strong>匹配<span style="color:red">右侧</span>文本</td>
+<td>(?=[a-z])[A-Z]</td>
+</tr>
+<tr>
+<td>(?!…)</td>
+<td>子表达式<strong>不能</strong>匹配<span style="color:red">右侧</span>文本</td>
+<td>\d{3}(?!\d)</td>
+</tr>
+</tbody>
+</table>
+<p>具体位置的举例如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">(?=\d)                          (?&lt;=\d)</span><br><span class="line">  3hellvon                          3 hellvon</span><br><span class="line"> ^                                   ^ </span><br><span class="line"> ¦                                   ¦---找到位置了，左侧能匹配\d,</span><br><span class="line"> ¦                                       </span><br><span class="line"> 找到位置了，右侧能匹配\d,所以找到的位置在这里</span><br></pre></td></tr></table></figure>
+<p>环视功能可以做很多有趣的事情:<br>比如匹配标签: <code>(?&lt;=&lt;(\w{3})&gt;).*(?=&lt;\/\1&gt;)</code><br>比如判断密码的强度:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">^(?=.*[0-9])        &lt;-- 右侧必须有数字</span><br><span class="line"> (?=.*[a-z])        &lt;-- 右侧必须有小写字母</span><br><span class="line"> (?=.*[A-Z])        &lt;-- 右侧必须有大写字母</span><br><span class="line"> (?=.*[@#$%^&amp;+=])   &lt;-- 右侧必须要有特殊字符</span><br><span class="line"> (?=\S+$).&#123;10,&#125;     &lt;-- 必须是非空格，且10位以上.</span><br><span class="line">$</span><br></pre></td></tr></table></figure>
+<h2 id="其他特性"><a href="#其他特性" class="headerlink" title="其他特性"></a>其他特性</h2><p>正则里面有很多重要的特性，限于30分钟和篇幅原因，我无法都写上，我提一下一些概念，有兴趣的同学可以自行检索关键字。</p>
+<ul>
+<li>正则表达式引擎(流派) 比如NFA/DFA.</li>
+<li>递归的正则表达式</li>
+<li>正则回溯</li>
+<li>宽松模式</li>
+<li>条件判断</li>
+<li>正则本地化(locale) 以及Unicode</li>
+<li>模式修饰符(re pattern modifiers)</li>
+</ul>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
+<li>杂项 <a href="https://stackoverflow.com/a/22944075" target="_blank" rel="noopener">https://stackoverflow.com/a/22944075</a></li>
+<li>书籍 Mastering Regular Expressions</li>
+<li>PCRE <a href="https://www.pcre.org/" target="_blank" rel="noopener">https://www.pcre.org/</a></li>
+<li>手册 <a href="http://www.rexegg.com" target="_blank" rel="noopener">http://www.rexegg.com</a></li>
+<li>手册 <a href="https://www.regular-expressions.info/" target="_blank" rel="noopener">https://www.regular-expressions.info/</a></li>
+<li>man pcre (Mac/Linux下)</li>
+<li>调试 <a href="https://regex101.com/" target="_blank" rel="noopener">https://regex101.com/</a></li>
+<li>可视化 <a href="https://www.debuggex.com/" target="_blank" rel="noopener">https://www.debuggex.com/</a></li>
+<li>PHP 项目 <a href="https://github.com/nikic/FastRoute/" target="_blank" rel="noopener">FastRoute</a> (应用正则很好的例子)</li>
+<li>Python 项目 <a href="https://github.com/bottlepy/bottle" target="_blank" rel="noopener">Bottle</a> (应用正则很好的例子)</li>
+<li><a href="https://github.com/search?utf8=%E2%9C%93&amp;q=Markdown+parser&amp;type=" target="_blank" rel="noopener">Markdown Parser</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>感谢支持</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/assets/img/wechat.png" alt="shellvon 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/assets/img/alipay.png" alt="shellvon 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    shellvon
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://von.sh/2017/11/29/learn-regex-in-30-minutes/" title="30分钟学正则">http://von.sh/2017/11/29/learn-regex-in-30-minutes/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Regex/" rel="tag"># Regex</a>
+          
+            <a href="/tags/文本处理/" rel="tag"># 文本处理</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/12/01/a-new-beginning-again/" rel="prev" title="又一次新的开始">
+                又一次新的开始 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMjA5Mi84NjU2"></div>
+    </div>
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://avatars2.githubusercontent.com/u/3349696?s=360&v=4"
+                alt="shellvon" />
+            
+              <p class="site-author-name" itemprop="name">shellvon</p>
+              <p class="site-description motion-element" itemprop="description">好好学习,天天向上</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/shellvon" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:iamshellvon@gmail.com" target="_blank" title="邮箱">
+                    
+                      <i class="fa fa-fw fa-envelope"></i>邮箱</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.zhihu.com/people/shell-von" target="_blank" title="知乎">
+                    
+                      <i class="fa fa-fw fa-globe"></i>知乎</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.facebook.com/iamshellvon" target="_blank" title="脸书">
+                    
+                      <i class="fa fa-fw fa-facebook"></i>脸书</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-globe"></i>
+                小伙伴们
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://blog.kimleo.net/" title="kimLeo" target="_blank">kimLeo</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://plusplus7.com" title="plus7" target="_blank">plus7</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://esrever10.cc/" title="esrever10" target="_blank">esrever10</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://ixvii0iv.xyz/" title="ixvii0iv" target="_blank">ixvii0iv</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://tingoo.github.io/" title="tingoo" target="_blank">tingoo</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序"><span class="nav-number">1.</span> <span class="nav-text">序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#正则基础"><span class="nav-number">2.</span> <span class="nav-text">正则基础</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是正则表达式"><span class="nav-number">2.1.</span> <span class="nav-text">什么是正则表达式?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#元字符"><span class="nav-number">2.2.</span> <span class="nav-text">元字符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#子表达式"><span class="nav-number">2.3.</span> <span class="nav-text">子表达式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#简写"><span class="nav-number">2.4.</span> <span class="nav-text">简写</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#捕获-非捕获与反向引用"><span class="nav-number">2.5.</span> <span class="nav-text">捕获,非捕获与反向引用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#正则进阶"><span class="nav-number">3.</span> <span class="nav-text">正则进阶</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#贪婪与非贪婪"><span class="nav-number">3.1.</span> <span class="nav-text">贪婪与非贪婪</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调试"><span class="nav-number">3.2.</span> <span class="nav-text">调试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环视"><span class="nav-number">3.3.</span> <span class="nav-text">环视</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他特性"><span class="nav-number">3.4.</span> <span class="nav-text">其他特性</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考资料"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shellvon</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+
+
+
+
+  <div class="footer-custom">旧版博客 <a target="_blank" href="http://von.sh/TerminalBlog">TerminalBlog</a></div>
+
+
+        
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=64270194";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.3"></script>
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("6l7HRFXHGk9Lgv46OV1SwC1e-gzGzoHsz", "ThoguKU5TEwKs9X4lDmcqAsb");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
